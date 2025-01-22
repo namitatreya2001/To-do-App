@@ -47,9 +47,10 @@ This repository contains an advanced To-Do application developed using React wit
 <img width="948" alt="Image" src="https://github.com/user-attachments/assets/91999b66-a55c-48ca-b810-e48f5c76d654" />
 
 ### Sidebar Section
-
+<img width="179" alt="Image" src="https://github.com/user-attachments/assets/a5c6a146-dcc2-4b93-9a29-af5bcb0519c6" />
 
 ### Task Details Section
+
 
 ---
 
