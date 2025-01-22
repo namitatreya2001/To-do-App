@@ -35,7 +35,7 @@ This repository contains an advanced To-Do application developed using React wit
 ## Screenshots
 
 ### Login Page
-<img width="958" alt="Screenshot 2025-01-15 100737" src="https://github.com/user-attachments/assets/5199756c-ccf3-4c81-857a-06099a49bf5a" />
+<img width="959" alt="Image" src="https://github.com/user-attachments/assets/10829847-2056-43ab-8975-1e8b231ebbca" />
 
 ### Task List View
 <img width="944" alt="Image" src="https://github.com/user-attachments/assets/ad072601-c907-4033-9291-bd1c941ce1c4" />
