@@ -38,7 +38,7 @@ This repository contains an advanced To-Do application developed using React wit
 <img width="958" alt="Screenshot 2025-01-15 100737" src="https://github.com/user-attachments/assets/5199756c-ccf3-4c81-857a-06099a49bf5a" />
 
 ### Task List View
-<img width="629" alt="Screenshot 2025-01-15 101300" src="https://github.com/user-attachments/assets/ba1b55ac-a44c-43fd-b617-93d3f030f2bc" />
+<img width="944" alt="Image" src="https://github.com/user-attachments/assets/ad072601-c907-4033-9291-bd1c941ce1c4" />
 
 ### Add Task Feature
 <img width="955" alt="Screenshot 2025-01-15 101421" src="https://github.com/user-attachments/assets/944ee9b4-d3f3-464b-a3c5-5bb246c82fd8" />
