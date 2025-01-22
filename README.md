@@ -40,11 +40,11 @@ This repository contains an advanced To-Do application developed using React wit
 ### Task List View
 <img width="944" alt="Image" src="https://github.com/user-attachments/assets/ad072601-c907-4033-9291-bd1c941ce1c4" />
 
-### Add Task Feature
+### Recipe Suggestions
 <img width="955" alt="Screenshot 2025-01-15 101421" src="https://github.com/user-attachments/assets/944ee9b4-d3f3-464b-a3c5-5bb246c82fd8" />
 
-### Responsive Design
-<img width="944" alt="Screenshot 2025-01-15 101605" src="https://github.com/user-attachments/assets/2eecd24e-875e-4f48-9860-a2a318b70b66" />
+### Light theme
+
 
 ---
 
