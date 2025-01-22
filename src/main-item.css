@@ -1,0 +1,25 @@
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 16px;
+    width: 240px;
+    height: 40px;
+    background: #232323;
+    border-radius: 8px;
+    color: #e2e2e2;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  
+  .menu-item:hover {
+    background: rgba(53, 121, 55, 0.16);
+    color: #98E19B;
+  }
+  
+  .menu-item.active {
+    background: rgba(53, 121, 55, 0.16);
+    color: #98E19B;
+  }
+  

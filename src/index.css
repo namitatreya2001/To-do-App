@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-background: #242424;
+  --color-sidebar: #232323;
+  --color-accent: #347136;
+  --color-text-primary: #a6a6a6;
+  --color-text-secondary: #797c79;
+  --color-border: #2f3630;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: 'Inter', sans-serif;
+}
+
+.sidebar-item {
+  @apply flex items-center gap-3 px-4 py-2 text-sm font-semibold text-gray-400 hover:bg-[#253026] hover:text-[#74ab77] transition-colors;
+}
+
+.sidebar-item.active {
+  @apply bg-[#253026] text-[#74ab77];
+}
+
+.task-item {
+  @apply flex items-center justify-between p-4 border-b border-[#2f3630] hover:bg-[#2b2b2b] transition-colors;
+}
+
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 16px;
+  width: 240px;
+  height: 40px;
+  background: #232323;
+  border-radius: 8px;
+  color: #e2e2e2;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.menu-item:hover {
+  background: rgba(53, 121, 55, 0.16);
+  color: #98E19B;
+}
+
+.menu-item.active {
+  background: rgba(53, 121, 55, 0.16);
+  color: #98E19B;
+}
+
+/* * Add List Button  */
+.add-list-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 16px;
+
+  width: 240px;
+  height: 40px;
+
+  background: #232323;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #E2E2E2;
+}
+
+.add-list-btn:hover {
+  background: rgba(53, 121, 55, 0.16);
+  color: #98E19B;
+}
+
+.add-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.add-label {
+  font-size: 15px;
+  line-height: 20px;
+  color: #E2E2E2;
+}
+
