@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { CheckSquare, Calendar, Star, Users, Plus, ChevronLeft, Info } from 'lucide-react';
 import { addTask } from '../store/slices/tasksSlice';
 
-const TaskProgressCircle = ({ completedTasks, totalTasks, themeClasses }) => {
+const TaskProgressCircle = ({ completedTasks, totalTasks, isDarkMode }) => {
   const calculateSegments = () => {
     if (totalTasks === 0) return [0, 0];
     const completedAngle = (completedTasks / totalTasks) * 360;
@@ -12,6 +12,10 @@ const TaskProgressCircle = ({ completedTasks, totalTasks, themeClasses }) => {
   };
 
   const [completedAngle, pendingAngle] = calculateSegments();
+
+  // Theme-based colors
+  const pendingColor = isDarkMode ? "#347136" : "#166534";
+  const completedColor = isDarkMode ? "#74ab77" : "#86efac";
 
   const describeArc = (x, y, radius, startAngle, endAngle) => {
     const start = polarToCartesian(x, y, radius, endAngle);
@@ -39,7 +43,7 @@ const TaskProgressCircle = ({ completedTasks, totalTasks, themeClasses }) => {
             <path
               d={describeArc(50, 50, 40, 0, pendingAngle)}
               fill="none"
-              stroke={themeClasses.button.primary.split(' ')[0]}
+              stroke={pendingColor}
               strokeWidth="12"
               strokeLinecap="round"
             />
@@ -48,7 +52,7 @@ const TaskProgressCircle = ({ completedTasks, totalTasks, themeClasses }) => {
             <path
               d={describeArc(50, 50, 40, pendingAngle, 360)}
               fill="none"
-              stroke={themeClasses.text.accent.split(' ')[0]}
+              stroke={completedColor}
               strokeWidth="12"
               strokeLinecap="round"
             />
@@ -56,18 +60,18 @@ const TaskProgressCircle = ({ completedTasks, totalTasks, themeClasses }) => {
           <circle cx="50" cy="50" r="30" fill="transparent" />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+          <span className={`text-2xl font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
             {totalTasks}
           </span>
         </div>
       </div>
-      <div className={`flex gap-2 text-xs ${themeClasses.text.secondary} mt-2`}>
+      <div className={`flex gap-2 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'} mt-2`}>
         <span className="flex items-center gap-1">
-          <div className={`w-2 h-2 rounded-full ${themeClasses.button.primary}`}></div>
+          <div className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-[#347136]' : 'bg-green-700'}`}></div>
           Pending
         </span>
         <span className="flex items-center gap-1">
-          <div className={`w-2 h-2 rounded-full ${themeClasses.text.accent}`}></div>
+          <div className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-[#74ab77]' : 'bg-green-300'}`}></div>
           Done
         </span>
       </div>
@@ -75,7 +79,7 @@ const TaskProgressCircle = ({ completedTasks, totalTasks, themeClasses }) => {
   );
 };
 
-const Sidebar = ({ user, themeClasses }) => {
+const Sidebar = ({ user, themeClasses, isDarkMode }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [sidebarWidth] = useState(280);
   const dispatch = useDispatch();
@@ -101,7 +105,7 @@ const Sidebar = ({ user, themeClasses }) => {
     return (
       <button
         onClick={() => setIsVisible(true)}
-        className={`fixed left-0 top-4 p-2 ${themeClasses.sidebar} rounded-r-lg`}
+        className={`fixed left-0 top-4 p-2 ${themeClasses.sidebar} rounded-r-lg shadow-md`}
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
@@ -119,10 +123,9 @@ const Sidebar = ({ user, themeClasses }) => {
     >
       <div className="flex flex-col h-full">
         <div className={`sticky top-0 z-10 w-full flex flex-col items-center pt-8 pb-4 border-b ${themeClasses.border} ${themeClasses.sidebar}`}>
-        <div className={`w-[100px] h-[100px] rounded-full overflow-hidden ${themeClasses.card} mb-3`}>
-  <img src="Public\image37.png" alt="Profile" className="w-full h-full object-cover" />
-                       </div>
-
+          <div className={`w-[100px] h-[100px] rounded-full overflow-hidden ${themeClasses.card} mb-3`}>
+            <img src="Public\image37.png" alt="Profile" className="w-full h-full object-cover" />
+          </div>
           <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
             Hey, {user?.name || 'Guest'}
           </span>
@@ -162,7 +165,7 @@ const Sidebar = ({ user, themeClasses }) => {
             </button>
           </div>
 
-          <div className={`w-full flex flex-col items-center ${themeClasses.card} p-6`}>
+          <div className={`mx-4 rounded-lg ${themeClasses.card} p-6`}>
             <div className="flex items-center justify-between w-full mb-4">
               <span className={`font-medium text-[13px] ${themeClasses.text.primary}`}>
                 Today Tasks
@@ -174,8 +177,8 @@ const Sidebar = ({ user, themeClasses }) => {
 
             <TaskProgressCircle 
               completedTasks={completedTasks} 
-              totalTasks={totalTasks} 
-              themeClasses={themeClasses}
+              totalTasks={totalTasks}
+              isDarkMode={isDarkMode}
             />
 
             <div className={`w-full mt-4 pt-4 border-t ${themeClasses.border}`}>
@@ -200,4 +203,5 @@ const Sidebar = ({ user, themeClasses }) => {
     </aside>
   );
 };
+
 export default Sidebar;
