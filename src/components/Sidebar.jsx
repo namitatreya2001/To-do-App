@@ -1,118 +1,198 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { CheckSquare, Calendar, Star, Users, Plus, ChevronLeft, Info } from 'lucide-react';
-import TaskProgressCircle from './TaskProgressCircle';
+import { addTask } from '../store/slices/tasksSlice';
 
-const Sidebar = ({ user, isDarkMode, themeClasses }) => {
+const TaskProgressCircle = ({ completedTasks, totalTasks, themeClasses }) => {
+  const calculateSegments = () => {
+    if (totalTasks === 0) return [0, 0];
+    const completedAngle = (completedTasks / totalTasks) * 360;
+    const pendingAngle = 360 - completedAngle;
+    return [completedAngle, pendingAngle];
+  };
+
+  const [completedAngle, pendingAngle] = calculateSegments();
+
+  const describeArc = (x, y, radius, startAngle, endAngle) => {
+    const start = polarToCartesian(x, y, radius, endAngle);
+    const end = polarToCartesian(x, y, radius, startAngle);
+    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+    return [
+      "M", start.x, start.y,
+      "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+    ].join(" ");
+  };
+
+  const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
+    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+    return {
+      x: centerX + (radius * Math.cos(angleInRadians)),
+      y: centerY + (radius * Math.sin(angleInRadians))
+    };
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="relative w-32 h-32">
+        <svg className="w-full h-full" viewBox="0 0 100 100">
+          {pendingAngle > 0 && (
+            <path
+              d={describeArc(50, 50, 40, 0, pendingAngle)}
+              fill="none"
+              stroke={themeClasses.button.primary.split(' ')[0]}
+              strokeWidth="12"
+              strokeLinecap="round"
+            />
+          )}
+          {completedAngle > 0 && (
+            <path
+              d={describeArc(50, 50, 40, pendingAngle, 360)}
+              fill="none"
+              stroke={themeClasses.text.accent.split(' ')[0]}
+              strokeWidth="12"
+              strokeLinecap="round"
+            />
+          )}
+          <circle cx="50" cy="50" r="30" fill="transparent" />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className={`text-2xl font-bold ${themeClasses.text.primary}`}>
+            {totalTasks}
+          </span>
+        </div>
+      </div>
+      <div className={`flex gap-2 text-xs ${themeClasses.text.secondary} mt-2`}>
+        <span className="flex items-center gap-1">
+          <div className={`w-2 h-2 rounded-full ${themeClasses.button.primary}`}></div>
+          Pending
+        </span>
+        <span className="flex items-center gap-1">
+          <div className={`w-2 h-2 rounded-full ${themeClasses.text.accent}`}></div>
+          Done
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const Sidebar = ({ user, themeClasses }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [sidebarWidth] = useState(280);
+  const dispatch = useDispatch();
+  
   const tasks = useSelector((state) => state.tasks.items);
-
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.completed).length;
+  const starredTasks = tasks.filter((task) => task.isStarred).length;
+
+  const handleAddTask = () => {
+    const newTask = {
+      id: Date.now(),
+      title: `Task ${totalTasks + 1}`,
+      completed: false,
+      isStarred: false,
+      priority: 'normal',
+      createdAt: new Date().toISOString(),
+    };
+    dispatch(addTask(newTask));
+  };
 
   if (!isVisible) {
     return (
       <button
         onClick={() => setIsVisible(true)}
-        className={`fixed left-0 top-4 p-2 ${themeClasses.sidebar} ${themeClasses.button.secondary} rounded-r-lg`}
+        className={`fixed left-0 top-4 p-2 ${themeClasses.sidebar} rounded-r-lg`}
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
     );
   }
 
-  const menuItemBaseClass = `flex items-center gap-4 px-6 py-3 w-full transition-colors`;
-  const menuItemDefault = isDarkMode
-    ? 'text-[#E2E2E2] hover:bg-[#343434]'
-    : 'text-gray-700 hover:bg-gray-100';
-  const menuItemActive = isDarkMode
-    ? 'text-[#98E19B] bg-[#355B37]'
-    : 'text-green-700 bg-green-50';
+  const menuItemBaseClass = "flex items-center gap-4 px-6 py-3 w-full transition-colors";
+  const menuItemDefault = `${themeClasses.text.primary} ${themeClasses.hover}`;
+  const menuItemActive = `${themeClasses.text.accent} ${themeClasses.card}`;
 
   return (
     <aside
-  className={`fixed left-0 top-0 h-[850px] ${themeClasses.sidebar} flex flex-col gap-2 overflow-hidden`}
-  style={{ width: `${sidebarWidth}px` }}
->
-  <div className="flex flex-col items-center h-full overflow-y-auto">
-    {/* User Section */}
-    <div className={`w-full flex flex-col items-center pt-8 pb-4 border-b ${themeClasses.border}`}>
-      <img
-        src="/Public/image37.png"  // Assuming the image is in the public folder
-        alt="User Avatar"
-        className={`w-[100px] h-[100px] rounded-full ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'} mb-3`}
-      />
-      <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
-        Hey, {user?.name || 'Guest'}
-      </span>
-    </div>
+      className={`fixed left-0 top-0 h-screen ${themeClasses.sidebar} flex flex-col overflow-hidden border-r ${themeClasses.border}`}
+      style={{ width: `${sidebarWidth}px` }}
+    >
+      <div className="flex flex-col h-full">
+        <div className={`sticky top-0 z-10 w-full flex flex-col items-center pt-8 pb-4 border-b ${themeClasses.border} ${themeClasses.sidebar}`}>
+        <div className={`w-[100px] h-[100px] rounded-full overflow-hidden ${themeClasses.card} mb-3`}>
+  <img src="Public\image37.png" alt="Profile" className="w-full h-full object-cover" />
+                       </div>
 
-        {/* Navigation Section */}
-        <nav className="w-full py-6">
-          <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
-            <CheckSquare className="w-5 h-5" />
-            <span className="text-sm font-medium">All Tasks</span>
-          </button>
-          <button className={`${menuItemBaseClass} ${menuItemActive} rounded-lg`}>
-            <Calendar className="w-5 h-5" />
-            <span className="text-sm font-medium">Today</span>
-          </button>
-          <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
-            <Star className="w-5 h-5" />
-            <span className="text-sm font-medium">Important</span>
-          </button>
-          <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
-            <Calendar className="w-5 h-5" />
-            <span className="text-sm font-medium">Planned</span>
-          </button>
-          <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
-            <Users className="w-5 h-5" />
-            <span className="text-sm font-medium">Assigned to me</span>
-          </button>
-        </nav>
-
-        {/* Add List Section */}
-        <div className={`w-full py-4 border-t ${themeClasses.border}`}>
-          <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
-            <Plus className="w-5 h-5" />
-            <span className="text-sm font-medium">Add list</span>
-          </button>
+          <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
+            Hey, {user?.name || 'Guest'}
+          </span>
         </div>
 
-        {/* Today Tasks Section */}
-        <div className={`w-full flex flex-col items-center ${isDarkMode ? 'bg-[#232323]' : 'bg-gray-50'} p-6 mt-4`}>
-          <div className="flex items-center justify-between w-full mb-4">
-            <span className={`font-medium text-[13px] ${themeClasses.text.primary}`}>
-              Today Tasks
-            </span>
-            <button className={themeClasses.button.secondary}>
-              <Info className="w-4 h-4" />
+        <div className="flex-1 overflow-y-auto">
+          <nav className="w-full py-6">
+            <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
+              <CheckSquare className="w-5 h-5" />
+              <span className="text-sm font-medium">All Tasks ({totalTasks})</span>
+            </button>
+            <button className={`${menuItemBaseClass} ${menuItemActive} rounded-lg`}>
+              <Calendar className="w-5 h-5" />
+              <span className="text-sm font-medium">Today</span>
+            </button>
+            <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
+              <Star className="w-5 h-5" />
+              <span className="text-sm font-medium">Important ({starredTasks})</span>
+            </button>
+            <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
+              <Calendar className="w-5 h-5" />
+              <span className="text-sm font-medium">Planned</span>
+            </button>
+            <button className={`${menuItemBaseClass} ${menuItemDefault}`}>
+              <Users className="w-5 h-5" />
+              <span className="text-sm font-medium">Assigned to me</span>
+            </button>
+          </nav>
+
+          <div className={`w-full py-4 border-t ${themeClasses.border}`}>
+            <button 
+              className={`${menuItemBaseClass} ${menuItemDefault}`}
+              onClick={handleAddTask}
+            >
+              <Plus className="w-5 h-5" />
+              <span className="text-sm font-medium">Add Task</span>
             </button>
           </div>
 
-          {/* Task Progress Circle */}
-          <TaskProgressCircle 
-            completedTasks={completedTasks} 
-            totalTasks={totalTasks} 
-            isDarkMode={isDarkMode} 
-          />
-
-          {/* Total Tasks Counter */}
-          <div className={`w-full mt-4 pt-4 border-t ${themeClasses.border}`}>
-            <div className="flex justify-between items-center">
-              <span className={`text-sm ${themeClasses.text.secondary}`}>Total Tasks</span>
-              <span className={`text-sm font-medium ${themeClasses.text.primary}`}>{totalTasks}</span>
-            </div>
-            <div className="flex justify-between items-center mt-2">
-              <span className={`text-sm ${themeClasses.text.secondary}`}>Completed</span>
-              <span className={`text-sm font-medium ${themeClasses.text.primary}`}>{completedTasks}</span>
-            </div>
-            <div className="flex justify-between items-center mt-2">
-              <span className={`text-sm ${themeClasses.text.secondary}`}>Pending</span>
-              <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
-                {totalTasks - completedTasks}
+          <div className={`w-full flex flex-col items-center ${themeClasses.card} p-6`}>
+            <div className="flex items-center justify-between w-full mb-4">
+              <span className={`font-medium text-[13px] ${themeClasses.text.primary}`}>
+                Today Tasks
               </span>
+              <button className={themeClasses.button.secondary}>
+                <Info className="w-4 h-4" />
+              </button>
+            </div>
+
+            <TaskProgressCircle 
+              completedTasks={completedTasks} 
+              totalTasks={totalTasks} 
+              themeClasses={themeClasses}
+            />
+
+            <div className={`w-full mt-4 pt-4 border-t ${themeClasses.border}`}>
+              <div className="flex justify-between items-center">
+                <span className={`text-sm ${themeClasses.text.secondary}`}>Total Tasks</span>
+                <span className={`text-sm font-medium ${themeClasses.text.primary}`}>{totalTasks}</span>
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                <span className={`text-sm ${themeClasses.text.secondary}`}>Completed</span>
+                <span className={`text-sm font-medium ${themeClasses.text.primary}`}>{completedTasks}</span>
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                <span className={`text-sm ${themeClasses.text.secondary}`}>Pending</span>
+                <span className={`text-sm font-medium ${themeClasses.text.primary}`}>
+                  {totalTasks - completedTasks}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -120,5 +200,4 @@ const Sidebar = ({ user, isDarkMode, themeClasses }) => {
     </aside>
   );
 };
-
 export default Sidebar;

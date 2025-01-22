@@ -181,7 +181,7 @@ const Dashboard = () => {
           className={`fixed left-0 top-0 h-[850px] ${themeClasses.sidebar} flex flex-col gap-2 overflow-hidden`}
           style={{ width: "280px" }}
         >
-          <Sidebar user={user} isDarkMode={isDarkMode} themeClasses={themeClasses} />
+          <Sidebar user={user} themeClasses={themeClasses} />
         </aside>
       )}
 
