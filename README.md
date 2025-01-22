@@ -44,8 +44,7 @@ This repository contains an advanced To-Do application developed using React wit
 <img width="923" alt="Image" src="https://github.com/user-attachments/assets/8417569b-0126-48b9-a633-2eb3fddba826" />
 
 ### Light theme
-
-
+<img width="948" alt="Image" src="https://github.com/user-attachments/assets/91999b66-a55c-48ca-b810-e48f5c76d654" />
 
 ### Sidebar Section
 
